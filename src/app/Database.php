@@ -8,7 +8,9 @@
 
         /**
          * Realiza a coneção com o banco de dados e retorna por opção o estado da conexão.
+         * 
          * @param boolean $debug Passar true para a função fará que retorne o estado da conexão.
+         * 
          * @return Conexão ou retorno de estado.
          */
         public static function dbConnect($debug) {
@@ -28,12 +30,24 @@
                 }
             } catch(PDOException $e) {
                 if($debug == true){
-                    printError("Connection -> Falhou");
                     echo "A Conexão falhou -> ".$e->getMessage();
                 }
             }
         }
+
+        /**
+         * Insere através dos parâmetros na tabela postagem.
+         * 
+         * @param string $titulo Título da postagem do blog.
+         * @param string $conteudo Conteúdo da postagem do blog.
+         * 
+         * @return Insert
+         */
+        public static function insertPostagem($titulo, $conteudo) {
+            $inserir = $conexao->prepare("INSERT INTO postagem (tituloPost, conteudoPost) VALUES (:tituloPost, :conteudoPost)");
+            $inserir->bindParam('tituloPost', $titulo);
+            $inserir->bindParam('conteudoPost', $conteudo);
+            $inserir->execute();
+        }
     }
-
-
 ?>
