@@ -49,5 +49,19 @@
             $inserir->bindParam('conteudoPost', $conteudo);
             $inserir->execute();
         }
+        /**
+         * Insere através dos parâmetros na tabela postagem.
+         * 
+         * @param string $titulo Título da postagem do blog.
+         * @param string $conteudo Conteúdo da postagem do blog.
+         * 
+         * @return Insert
+         */
+        public static function insertPostaasdasdasgem($titulo, $conteudo) {
+            $inserir = $conexao->prepare("INSERT INTO postagem (tituloPost, conteudoPost) VALUES (:tituloPost, :conteudoPost)");
+            $inserir->bindParam('tituloPost', $titulo);
+            $inserir->bindParam('conteudoPost', $conteudo);
+            $inserir->execute();
+        }
     }
 ?>
