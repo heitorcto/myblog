@@ -4,8 +4,6 @@ namespace Blog\app;
 use PDO;
 use PDOException;
 
-// ANOTAÇÃO: TRATAR POSSÍVEIS ERROS NOS PARÂMETROS
-
 /**
  * Essa classe irá gerenciar os posts do blog.
  */
@@ -19,44 +17,76 @@ class Postagem {
      * 
      * @return array
      */
-    public static function selecionarPostagens($idPost = null, $selectLimit = null) {
+    public static function selecionarPostagens($idPost = false, $selectLimit = false) {
         $conexao = Database::conexao();
 
-        $limitarRegistros = "";
+        // Verificando possível erro
+        if ($idPost != false && $selectLimit != false) {
+            echo "[Erro 1 - Postagem Class] - Não é possível passar os dois parâmetros que sejam diferentes de false.";
+        }
 
-        if ($idPost != null) {
-            $selecionar = $conexao->prepare("SELECT * FROM postagem WHERE idPost = :idPost");
+        // Caso for selecionado por ID
+        if ($idPost == true) {
+            try {
+                $selecionar = $conexao->prepare("SELECT * FROM postagem WHERE idPost = :idPost");
+                $selecionar->bindParam('idPost', $idPost);
+                $selecionar->execute();
+                while($info = $selecionar->fetch(PDO::FETCH_ASSOC)){
+                    $retorno = [
+                        "idPost" => $info['idPost'],
+                        "tituloPost" => $info['tituloPost'],
+                        "conteudoPost" => $info['conteudoPost'],
+                    ];
+                }
+                return $retorno;
+            } catch (PDOException $e) {
+                return false;
+            }
+        }
+
+        // Caso for selecionado por LIMIT
+        if ($selectLimit != false && is_numeric($selectLimit) && $selectLimit > 0) {
+            try {
+                $selecionar = $conexao->prepare("SELECT * FROM postagem LIMIT $selectLimit");
+                $selecionar->bindParam('idPost', $idPost);
+                $selecionar->execute();
+                $contador = 0;
+                while($info = $selecionar->fetch(PDO::FETCH_ASSOC)){
+                    $retorno['dados'][$contador] = [
+                        "idPost" => $info['idPost'],
+                        "tituloPost" => $info['tituloPost'],
+                        "conteudoPost" => $info['conteudoPost']
+                    ];
+                    $contador++;
+                }
+                $retorno['total'] = $contador;
+                return $retorno;
+            } catch (PDOException $e) {
+                return false;
+            }
+        }
+
+        // Caso os parâmetros não sejam passados
+        if ($idPost === false && $selectLimit === false) {
+            $selecionar = $conexao->prepare("SELECT * FROM postagem");
             $selecionar->bindParam('idPost', $idPost);
             $selecionar->execute();
+            $contador = 0;
             while($info = $selecionar->fetch(PDO::FETCH_ASSOC)){
-                $retorno = [
+                $retorno['dados'][$contador] = [
                     "idPost" => $info['idPost'],
                     "tituloPost" => $info['tituloPost'],
-                    "conteudoPost" => $info['conteudoPost'],
+                    "conteudoPost" => $info['conteudoPost']
                 ];
+                $contador++;
             }
-            return $retorno;
-        } elseif ($selectLimit != null){
-            $limitarRegistros = "LIMIT $selectLimit";
-        } elseif ($selectLimit != null && $idPost != null){
-            return "[Erro 1 - class Postagem] Certifique-se que os parâmetros estão corretos.";
+            $retorno['total'] = $contador;
+            if ($retorno['total'] > 0) {
+                return $retorno;
+            } else {
+                return false;
+            }
         }
-
-        $selecionar = $conexao->prepare("SELECT * FROM postagem $limitarRegistros");
-        $selecionar->bindParam('idPost', $idPost);
-        $selecionar->execute();
-        $contador = 0;
-        while($info = $selecionar->fetch(PDO::FETCH_ASSOC)){
-            $retorno['dados'][$contador] = [
-                "idPost" => $info['idPost'],
-                "tituloPost" => $info['tituloPost'],
-                "conteudoPost" => $info['conteudoPost']
-            ];
-            $contador++;
-        }
-        $retorno['total'] = $contador;
-        
-        return $retorno['dados'];
     }
 
      /**
