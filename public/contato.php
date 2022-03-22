@@ -19,7 +19,7 @@ include "header.html";
                 formData.append('mensagem',mensagem);
                 
                 $.ajax({
-                    url : "../testes.php",
+                    url : "../controller/contatoControle.php",
                     type: "POST",
                     data : formData,
                     processData: false,
@@ -29,7 +29,7 @@ include "header.html";
                     },
                     success:function(data){
                         var retorno = JSON.parse(data);
-                        console.log(retorno);
+                        console.log(retorno.status);
                         $("#envioSucesso").show();
                         $("#envioErro").hide();
                     },
