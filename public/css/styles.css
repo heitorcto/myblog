@@ -305,3 +305,21 @@ header.masthead .site-heading .h1 {
   border-radius: 5px;
   transition: 0.3s;
 }
+
+#envioSucesso {
+  color: #477d45;
+}
+
+.btn-send .btn {
+  color: #fff;
+  background: #0085A1;
+  border-color: #009fbe;
+  font-weight: bold;
+}
+
+.btn-send .btn:hover {
+  color: #fff ;
+  background: #006d83;
+  border-color: #008eaa;
+  transition: 0.3s;
+}
