@@ -29,7 +29,42 @@ include "header.html";
                     },
                     success:function(data){
                         var retorno = JSON.parse(data);
-                        console.log(retorno.status);
+                        console.log(retorno);
+                        // Verificando se os dados estão vazios
+                        if (retorno.nomeVazio === true) {
+                            $("#vazio-nome").show();
+                        } else {
+                            $("#vazio-nome").hide();
+                        }
+                        if (retorno.emailVazio === true) {
+                            $("#vazio-email").show();
+                        } else {
+                            $("#vazio-email").hide();
+                        }
+                        if (retorno.mensagemVazio === true) {
+                            $("#vazio-mensagem").show();
+                        } else {
+                            $("#vazio-mensagem").hide();
+                        }
+
+                        // Tratando validade dos dados
+                        if (retorno.nomeInvalido === true) {
+                            $("#invalido-nome").show();
+                        } else {
+                            $("#invalido-nome").hide();
+                        }
+                        if (retorno.emailInvalido === true) {
+                            $("#invalido-email").show();
+                        } else {
+                            $("#invalido-email").hide();
+                        }
+                        if (retorno.mensagemInvalido === true) {
+                            $("#invalido-mensagem").show();
+                        } else {
+                            $("#invalido-mensagem").hide();
+                        }
+
+
                         $("#envioSucesso").show();
                         $("#envioErro").hide();
                     },
@@ -66,17 +101,20 @@ include "header.html";
                             <div class="form-floating">
                                 <input class="form-control" id="nome" type="text" placeholder="Seu nome..." value="">
                                 <label for="nome">Nome</label>
-                                <div id="invalid-nome" class="invalid-feedback">Nome obrigatório.</div>
+                                <div id="vazio-nome" class="invalid-feedback">Nome obrigatório.</div>
+                                <div id="invalido-nome" class="invalid-feedback">Seu nome deve ter no mínimo 5 caracteres.</div>
                             </div>
                             <div class="form-floating">
                                 <input class="form-control" id="email" type="email" placeholder="Seu email...">
                                 <label for="email">Email</label>
-                                <div id="invalid-email" class="invalid-feedback">Email obrigatório.</div>
+                                <div id="vazio-email" class="invalid-feedback">Email obrigatório.</div>
+                                <div id="invalido-email" class="invalid-feedback">Email inválido.</div>
                             </div>
                             <div class="form-floating">
                                 <textarea class="form-control" id="mensagem" placeholder="Sua mensagem..." style="height: 12rem"></textarea>
                                 <label for="mensagem">Mensagem</label>
-                                <div id="invalid-mensagem" class="invalid-feedback">Mensagem obrigatória.</div>
+                                <div id="vazio-mensagem" class="invalid-feedback">Mensagem obrigatória.</div>
+                                <div id="invalido-mensagem" class="invalid-feedback">Sua mensagem deve conter pelo menos 30 caracteres</div>
                             </div>
                             <br>
                             
