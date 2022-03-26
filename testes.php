@@ -5,9 +5,9 @@
 // use Blog\app\Database;
 // use Blog\app\Postagem;
 
-// $con = Database::conexao();
+// $con = Database::conexao(true);
 
-// // Postagem::inserirPostagem("Titulo Legal","Conteudo Legal");
+// echo Postagem::inserirPostagem("Titulo Legal","Conteudo Legal");
 // // Postagem::alterarPostagem(6, "Titulo Legal Modificado","Conteudo Legal Modificado");
 // // Postagem::excluirPostagem();
 // $teste = Postagem::selecionarPostagens(false, 4);

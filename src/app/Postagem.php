@@ -97,7 +97,7 @@ class Postagem {
      * 
      * @return boolean
      */
-    public function inserirPostagem($titulo, $conteudo) {
+    public static function inserirPostagem($titulo, $conteudo) {
         $conexao = Database::conexao();
         try{
             $inserir = $conexao->prepare("INSERT INTO postagem (tituloPost, conteudoPost) VALUES (:tituloPost, :conteudoPost)");

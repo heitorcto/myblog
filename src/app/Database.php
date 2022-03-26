@@ -19,21 +19,21 @@ class Database {
     public static function conexao($debug = false) {
         if ($debug == true) {
             echo "##################################################<br>";
-            echo "Servidor -> sql10.freesqldatabase.com <br>";
-            echo "Nome do banco -> sql10479799 <br>";
-            echo "Nome de usuário -> sql10479799 <br>";
-            echo "Senha -> rBSuVdfyxn <br>";
+            echo "Servidor -> localhost <br>";
+            echo "Nome do banco -> incode <br>";
+            echo "Nome de usuário -> root <br>";
+            echo "Senha -> <br>";
             echo "##################################################<br>";
         }
         try {
-            $conexao = new PDO("mysql:host=sql10.freesqldatabase.com;dbname=sql10479799", "sql10479799", "rBSuVdfyxn");
+            $conexao = new PDO("mysql:host=localhost;dbname=incode", "root", "");
             $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            if($debug == true){
+            if ($debug == true) {
                 echo "Conexão realizada com Sucesso <br>";
             }
         } catch (PDOException $e) {
             if ($debug == true) {
-                echo "A Conexão falhou -> ".$e->getMessage();
+                echo $e->getMessage();
             }
         }
         return $conexao;
