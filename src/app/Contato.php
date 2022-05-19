@@ -29,7 +29,7 @@ class Contato extends Database {
      * @param string $mensagem
      * @return boolean
      */
-    public function inserirContato($nome, $email, $mensagem) {
+    public function inserir($nome, $email, $mensagem) {
         try{
             $inserir = $this->conexao->prepare("INSERT INTO contato (nomeContato, emailContato, mensagemContato) VALUES (:nomeContato, :emailContato, :mensagemContato)");
             $inserir->bindParam('nomeContato', $nome);
@@ -60,6 +60,16 @@ class Contato extends Database {
         } else {
             $this->exibe->erro("O parâmetro da função precisa ser numérico!");
         }
+    }
+
+    /**
+     * Deleta todos os registros da tabela de Contato
+     * 
+     * @return void
+     */
+    public function deletar() {
+        $deletar = $this->conexao->prepare("DELETE FROM contato");
+        $deletar->execute();
     }
     
 }

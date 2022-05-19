@@ -6,6 +6,7 @@ use Blog\app\Contato;
 
 $contato = new Contato();
 
-$contato->semear(2);
+// $contato->semear("a");
+$contato->deletar();
 
 ?>

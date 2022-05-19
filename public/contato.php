@@ -64,9 +64,13 @@ include "header.html";
                             $("#invalido-mensagem").hide();
                         }
 
-
-                        $("#envioSucesso").show();
-                        $("#envioErro").hide();
+                        if (retorno.sucesso === true) {
+                            $("#envioSucesso").show();
+                            $("#envioErro").hide();
+                        } else if (retorno.sucesso === false) {
+                            $("#envioSucesso").hide();
+                            $("#envioErro").show();
+                        }
                     },
                     error: function(jqXHR, textStatus, errorThrown){
                         $("#envioErro").show();

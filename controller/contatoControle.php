@@ -1,11 +1,20 @@
 <?php
+require_once '../vendor/autoload.php';
+
+use Blog\app\Contato;
+
+$contato = new Contato();
 
 // Tratando validade dos dados
 if (isset($_POST['nome']) || isset($_POST['email']) || isset($_POST['mensagem'])) {
+    $erroNome = false;
+    $erroEmail = false;
+    $erroMensagem = false;
+
     if ($_POST['nome'] === "") {
         $retorno['nomeVazio'] = true;
         $erroNome = true;
-    } elseif (strlen($_POST['nome']) <= 5) {
+    } elseif (strlen($_POST['nome']) < 5) {
         $retorno['nomeInvalido'] = true;
         $erroNome = true;
     }
@@ -29,12 +38,10 @@ if (isset($_POST['nome']) || isset($_POST['email']) || isset($_POST['mensagem'])
     if ($erroNome === true || $erroEmail === true || $erroMensagem === true) {
         $retorno['sucesso'] = false;
     } else {
+        $contato->inserir($_POST['nome'], $_POST['email'], $_POST['mensagem']);
         $retorno['sucesso'] = true;
     }
 } 
 
-$retorno['sucesso'] = true;
-
 echo json_encode($retorno);
-
 ?>
