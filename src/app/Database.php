@@ -37,12 +37,11 @@ class Database extends Exibe {
             $conexao = new PDO("mysql:host=$this->servidor;dbname=$this->nomeBanco", "$this->usuario", "$this->senha");
             $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             if ($debug == true) {
-                echo "Conexão realizada com Sucesso <br>";
                 Exibe::sucesso("Conexão realizada com sucesso!");
             }
         } catch (PDOException $e) {
             if ($debug == true) {
-                echo Exibe::erro($e->getMessage());
+                Exibe::erro($e->getMessage());
             }
         }
         return $conexao;

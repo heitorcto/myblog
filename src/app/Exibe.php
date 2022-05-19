@@ -12,7 +12,7 @@ class Exibe {
      * @return String
      */
     public static function sucesso ($string) {
-        return "<span style='color:grenn;'>$string</span><br>";
+        echo "<span style='color:green;'>$string</span><br>";
     }
 
     /**
@@ -22,7 +22,7 @@ class Exibe {
      * @return String
      */
     public static function erro ($string) {
-        return "<span style='color:red;'>$string</span><br>";
+        echo "<span style='color:red;'>$string</span><br>";
     }
 
     /**
@@ -32,7 +32,7 @@ class Exibe {
      * @return String
      */
     public static function alerta ($string) {
-        return "<span style='color:orange;'>$string</span><br>";
+        echo "<span style='color:orange;'>$string</span><br>";
     }
 
     /**
@@ -42,7 +42,7 @@ class Exibe {
      * @return Array
      */
     public static function array ($array) {
-        return "<pre style='color:purple;'>".print_r($array)."</pre>";
+        echo "<pre style='color:purple;'>".print_r($array)."</pre>";
     }
 }
 
