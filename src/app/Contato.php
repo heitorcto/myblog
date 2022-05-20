@@ -1,7 +1,6 @@
 <?php
 namespace Blog\app;
 
-use PDO;
 use PDOException;
 /**
  * Classe para o envio do contato no blog.
@@ -43,7 +42,7 @@ class Contato extends Database {
     }
 
     /**
-     * Insere uma quantidade desejada de registros na tabela de Contato
+     * Insere uma quantidade desejada de registros na tabela de contato
      *
      * @param int $quantidade
      * @return void
@@ -63,7 +62,7 @@ class Contato extends Database {
     }
 
     /**
-     * Deleta todos os registros da tabela de Contato
+     * Deleta todos os registros da tabela de contato
      * 
      * @return void
      */

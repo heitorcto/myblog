@@ -7,7 +7,33 @@ use PDOException;
 /**
  * Essa classe irá gerenciar os posts do blog.
  */
-class Postagem {
+class Postagem extends Exibe{
+    /**
+     * Método construtor para retorno de informações e funcionalidades importantes
+     */
+    public function __construct() {
+        $this->db = new Database;
+        $this->conexao = $this->db->conexao();
+
+        $this->titulo = "Título da Postagem";
+        $this->dataHoje = date("Y-m-d H:i:s");
+        $this->conteudo = "Conteúdo da postagem, Conteúdo da postagem, Conteúdo da postagem, Conteúdo da postagem, Conteúdo da postagem";
+    }
+
+    public function query($query, $array) {
+        try {
+            $queryEfetuar = $this->conexao->prepare("$query");
+            Exibe::alerta($query);
+            foreach ($array as $chave => $parametro) {
+                Exibe::alerta($chave);
+                Exibe::alerta($parametro);
+                $queryEfetuar->bindParam($chave, $parametro);
+            }
+            $queryEfetuar->execute();
+        } catch (PDOException $e) {
+            Exibe::erro($e->getMessage());
+        }
+    }
 
     /**
      * Retorna as postagens de acordo com os parâmetros da função.
@@ -17,18 +43,16 @@ class Postagem {
      * 
      * @return array
      */
-    public static function selecionarPostagens($idPost = false, $selectLimit = false) {
-        $conexao = Database::conexao();
-
+    public function selecionar($idPost = false, $selectLimit = false) {
         // Verificando possível erro
         if ($idPost != false && $selectLimit != false) {
-            echo "[Erro 1 - Postagem Class] - Não é possível passar os dois parâmetros que sejam diferentes de false.";
+            Exibe::erro("Não é possível passar os dois parâmetros que sejam diferentes de false.");
         }
 
         // Caso for selecionado por ID
         if ($idPost == true) {
             try {
-                $selecionar = $conexao->prepare("SELECT * FROM postagem WHERE idPost = :idPost");
+                $selecionar = $this->conexao->prepare("SELECT * FROM postagem WHERE idPost = :idPost");
                 $selecionar->bindParam('idPost', $idPost);
                 $selecionar->execute();
                 while($info = $selecionar->fetch(PDO::FETCH_ASSOC)){
@@ -36,6 +60,7 @@ class Postagem {
                         "idPost" => $info['idPost'],
                         "tituloPost" => $info['tituloPost'],
                         "conteudoPost" => $info['conteudoPost'],
+                        "dataPost" => $info['dataPost']
                     ];
                 }
                 return $retorno;
@@ -47,7 +72,7 @@ class Postagem {
         // Caso for selecionado por LIMIT
         if ($selectLimit != false && is_numeric($selectLimit) && $selectLimit > 0) {
             try {
-                $selecionar = $conexao->prepare("SELECT * FROM postagem LIMIT $selectLimit");
+                $selecionar = $this->conexao->prepare("SELECT * FROM postagem LIMIT $selectLimit");
                 $selecionar->bindParam('idPost', $idPost);
                 $selecionar->execute();
                 $contador = 0;
@@ -55,7 +80,8 @@ class Postagem {
                     $retorno['dados'][$contador] = [
                         "idPost" => $info['idPost'],
                         "tituloPost" => $info['tituloPost'],
-                        "conteudoPost" => $info['conteudoPost']
+                        "conteudoPost" => $info['conteudoPost'],
+                        "dataPost" => $info['dataPost']
                     ];
                     $contador++;
                 }
@@ -68,7 +94,7 @@ class Postagem {
 
         // Caso os parâmetros não sejam passados
         if ($idPost === false && $selectLimit === false) {
-            $selecionar = $conexao->prepare("SELECT * FROM postagem");
+            $selecionar = $this->conexao->prepare("SELECT * FROM postagem");
             $selecionar->bindParam('idPost', $idPost);
             $selecionar->execute();
             $contador = 0;
@@ -76,7 +102,8 @@ class Postagem {
                 $retorno['dados'][$contador] = [
                     "idPost" => $info['idPost'],
                     "tituloPost" => $info['tituloPost'],
-                    "conteudoPost" => $info['conteudoPost']
+                    "conteudoPost" => $info['conteudoPost'],
+                    "dataPost" => $info['dataPost']
                 ];
                 $contador++;
             }
@@ -97,12 +124,12 @@ class Postagem {
      * 
      * @return boolean
      */
-    public static function inserirPostagem($titulo, $conteudo) {
-        $conexao = Database::conexao();
+    public function inserir($titulo, $conteudo) {
         try{
-            $inserir = $conexao->prepare("INSERT INTO postagem (tituloPost, conteudoPost) VALUES (:tituloPost, :conteudoPost)");
+            $inserir = $this->conexao->prepare("INSERT INTO postagem (tituloPost, conteudoPost, dataPost) VALUES (:tituloPost, :conteudoPost, :dataPost)");
             $inserir->bindParam('tituloPost', $titulo);
             $inserir->bindParam('conteudoPost', $conteudo);
+            $inserir->bindParam('conteudoPost', $this->dataHoje);
             $inserir->execute();
             return true;
         } catch (PDOException $e) {
@@ -118,10 +145,9 @@ class Postagem {
      * @param string $novoConteudo
      * @return boolean
      */
-    public static function alterarPostagem($idPost, $novoTitulo = "", $novoConteudo = "") {
-        $conexao = Database::conexao();
+    public function alterar($idPost, $novoTitulo = "", $novoConteudo = "") {
         try{
-            $alterar = $conexao->prepare("UPDATE postagem SET tituloPost = :tituloPost, conteudoPost = :conteudoPost WHERE idPost = :idPost");
+            $alterar = $this->conexao->prepare("UPDATE postagem SET tituloPost = :tituloPost, conteudoPost = :conteudoPost WHERE idPost = :idPost");
             $alterar->bindParam('idPost', $idPost);
             $alterar->bindParam('tituloPost', $novoTitulo);
             $alterar->bindParam('conteudoPost', $novoConteudo);
@@ -138,16 +164,45 @@ class Postagem {
      * @param int $idPost
      * @return boolean
      */
-    public static function excluirPostagem($idPost) {
-        $conexao = Database::conexao();
+    public function excluirPostagem($idPost) {
         try{
-            $alterar = $conexao->prepare("DELETE FROM postagem WHERE idPost = :idPost");
+            $alterar = $this->conexao->prepare("DELETE FROM postagem WHERE idPost = :idPost");
             $alterar->bindParam('idPost', $idPost);
             $alterar->execute();
             return true;
         } catch (PDOException $e) {
             return false;
         }
+    }
+
+    /**
+     * Insere uma quantidade desejada de registros na tabela de postagem
+     *
+     * @param int $quantidade
+     * @return void
+     */
+    public function semear($quantidade) {
+        if (is_numeric($quantidade)) {
+            for ($contador = 1; $contador <= $quantidade; $contador++) {
+                $inserir = $this->conexao->prepare("INSERT INTO postagem (tituloPost, conteudoPost, dataPost) VALUES (:tituloPost, :conteudoPost, :dataPost)");
+                $inserir->bindParam('tituloPost', $this->titulo);
+                $inserir->bindParam('conteudoPost', $this->conteudo);
+                $inserir->bindParam('dataPost', $this->dataHoje);
+                $inserir->execute();
+            }
+        } else {
+            Exibe::erro("O parâmetro da função precisa ser numérico!");
+        }
+    }
+
+    /**
+     * Deleta todos os registros da tabela de postagem
+     * 
+     * @return void
+     */
+    public function deletar() {
+        $deletar = $this->conexao->prepare("DELETE FROM postagem");
+        $deletar->execute();
     }
 }
 ?>
